@@ -24,11 +24,12 @@ import com.bumptech.glide.integration.compose.GlideImage
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun TeamItem(item: TeamInfo) {
+fun TeamItem(
+    modifier: Modifier,
+    item: TeamInfo
+) {
     Column(
-        modifier = Modifier
-            .width(125.dp)
-            .padding(8.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -64,6 +65,9 @@ fun TeamItem(item: TeamInfo) {
 @Composable
 private fun TeamItemPreview() {
     TeamItem(
+        modifier = Modifier
+            .width(125.dp)
+            .padding(8.dp),
         TeamInfo(
             name = "미치고",
             logo = null,

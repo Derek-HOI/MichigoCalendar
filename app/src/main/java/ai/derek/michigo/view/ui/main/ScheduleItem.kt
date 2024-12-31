@@ -76,16 +76,22 @@ fun ScheduleItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp),
+                .padding(top = 6.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TeamItem(item = schedule.leftTeam)
+            TeamItem(
+                modifier = Modifier.weight(1.0F),
+                item = schedule.leftTeam
+            )
             Image(
                 painter = painterResource(R.drawable.ic_versus_24),
                 contentDescription = null
             )
-            TeamItem(item = schedule.rightTeam)
+            TeamItem(
+                modifier = Modifier.weight(1.0F),
+                item = schedule.rightTeam
+            )
         }
         //TODO highlight, detail page 이동하기
         //onClick
