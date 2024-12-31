@@ -1,6 +1,7 @@
 package ai.derek.michigo.business
 
 import ai.derek.michigo.AttrSrc
+import ai.derek.michigo.BASE_URL
 import ai.derek.michigo.DivEmptyMath
 import ai.derek.michigo.DivFinishMatch
 import ai.derek.michigo.DivLeagueInfo
@@ -17,7 +18,6 @@ import ai.derek.michigo.model.GameState
 import ai.derek.michigo.model.Schedule
 import ai.derek.michigo.model.Team
 import ai.derek.michigo.model.TeamInfo
-import ai.derek.michigo.network.api.DateField
 import ai.derek.michigo.network.api.GameScheduleApi
 import ai.derek.michigo.util.getSaturdays
 import androidx.compose.ui.graphics.Color
@@ -40,19 +40,18 @@ constructor(
 
             val result = api.getGameSchedule(
                 teamSeq = team.seq,
-                body = DateField(
-                    thisYear = it.year.toString(),
-                    thisMonth = it.monthValue.toTwoDigitString(),
-                    thisDay = it.dayOfMonth.toTwoDigitString(),
-                )
+                thisYear = it.year,
+                thisMonth = it.monthValue,
+                thisDay = it.dayOfMonth,
             )
 
             if (result.isSuccessful) {
                 result.body()?.string()?.let { html ->
                     val document = Jsoup.parse(html)
-                    if (document.select(DivEmptyMath).isNotEmpty()) {
+                    if (!document.select(DivEmptyMath).isNotEmpty()) {
                         // 일정 있음
                         ret.add(
+                            //TODO 하이라이트 영상과 상세 결과 페이지 이동 기능 구현 필요
                             Schedule(
                                 date = it,
                                 matchDate = document.getMatchDate(),
@@ -85,9 +84,11 @@ private fun Document.getTeam(left: Boolean): TeamInfo {
 
     return TeamInfo(
         name = element?.selectFirst(SpanTeamName)?.text() ?: MsgNotFound,
-        logo = element?.selectFirst(ImgTeamLogo)?.attr(AttrSrc),
+        logo = element?.selectFirst(ImgTeamLogo)?.attr(AttrSrc)?.let {
+            BASE_URL + it
+        },
         score = element?.selectFirst(SpanScore)?.text()?.toInt() ?: 0,
-        scoreColor = element?.selectFirst(SpanTeamName)?.hasClass("blue")?.let {
+        scoreColor = element?.selectFirst(SpanScore)?.hasClass("blue")?.let {
             if (it) Color.Blue else Color.Red
         } ?: Color.DarkGray,
     )
@@ -100,6 +101,6 @@ private fun Document.getGameState() =
         } ?: GameState.UPCOMING
     } ?: GameState.UPCOMING
 
-private fun String.replaceBrToSpace() = replace("<br>", ", ")
+private fun String.replaceBrToSpace() = replace("<br>", ", ").replace("\n", "")
 
 fun Int.toTwoDigitString(): String = this.toString().padStart(2, '0')

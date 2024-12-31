@@ -1,5 +1,6 @@
 package ai.derek.michigo.di.module
 
+import ai.derek.michigo.BASE_URL
 import android.util.Log
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -14,8 +15,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
-
-    private const val API_BASE_URL = "https://www.shbaseball.co.kr"
 
     @Provides
     fun provideRetrofit(): Retrofit {
@@ -33,7 +32,7 @@ object RetrofitModule {
             }.build()
         )
             .addConverterFactory(GsonConverterFactory.create(gson))
-            .baseUrl(API_BASE_URL)
+            .baseUrl(BASE_URL)
             .build()
     }
 
