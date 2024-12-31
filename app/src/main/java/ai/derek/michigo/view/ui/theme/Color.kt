@@ -1,4 +1,4 @@
-package ai.derek.michigo.ui.theme
+package ai.derek.michigo.view.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

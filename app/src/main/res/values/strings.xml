@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Michigo</string>
+    <string name="app_name">미치고 다이몬즈</string>
+    <string name="michigo">미치고</string>
+    <string name="diemons">다이몬즈</string>
 </resources>

@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("kapt")
+    alias(libs.plugins.dagger.hilt) apply true
 }
 
 android {
@@ -57,7 +59,46 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.fragment)
+
+    // When using Kotlin.
+    kapt(libs.androidx.hilt.compiler)
+
+    implementation(libs.converter.gson)
+
+    implementation(libs.glide.compose)
+
+    // retrofit, okhttp3
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    // define a BOM and its version
+    implementation(platform(libs.okhttp.bom))
+    // define any required OkHttp artifacts without version
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    // data store
+    implementation(libs.datastore.preferences)
+    implementation(libs.datastore.preferences.core)
+
+    // orbit
+    implementation(libs.orbit.core)
+    // or, if on Android:
+    implementation(libs.orbit.viewmodel)
+    // If using Jetpack Compose include
+    implementation(libs.orbit.compose)
+    // Tests
+    testImplementation(libs.orbit.test)
 
     //jsoup
     implementation(libs.jsoup)
+}
+hilt {
+    enableAggregatingTask = false
 }

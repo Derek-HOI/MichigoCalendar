@@ -1,6 +1,5 @@
-package ai.derek.michigo.ui.theme
+package ai.derek.michigo.view.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
