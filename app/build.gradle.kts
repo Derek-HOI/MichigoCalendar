@@ -18,6 +18,8 @@ android {
         versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        setProperty("archivesBaseName", "미치고_캘린더_v${versionName}_c${versionCode}")
     }
 
     buildTypes {
