@@ -92,6 +92,7 @@ fun MainScreen(
 //            }
             ScheduleScreen(
                 innerPadding = innerPadding,
+                yearMonth = mainViewModelState.yearMonth,
                 schedules = mainViewModelState.schedules,
                 onClick = {
                     mainViewModel.showWebView(it)
