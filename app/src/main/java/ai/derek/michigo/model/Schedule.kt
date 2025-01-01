@@ -11,4 +11,6 @@ data class Schedule(
     val leftTeam: TeamInfo,
     val rightTeam: TeamInfo,
     val gameState: GameState,
+    val highlight: String?,
+    val details: String?,
 )

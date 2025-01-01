@@ -24,8 +24,13 @@ const val SpanTeamName = "span.team-name"
 const val SpanScore = "span.score"
 
 /**
- * a tag 로 2개가 있다면 첫 번째는 하이라이트 영상, 두 번째는 경기 상세 스탯
+ * a tag 확인, href 검사 후
+ * @see HrefNull 인 경우 null
+ * highlight 포함 시 하이라이트 영상
+ * 그 외엔 상세
  */
-const val DivButtonArea = "div.btn-area"
+const val DivButtonAreaAnchor = "div.btn-area a"
 
 const val AttrSrc = "src"
+const val AttrHref = "href"
+const val HrefNull = "javascript:;"

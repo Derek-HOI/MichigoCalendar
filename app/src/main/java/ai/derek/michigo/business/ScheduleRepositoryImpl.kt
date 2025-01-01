@@ -1,13 +1,16 @@
 package ai.derek.michigo.business
 
+import ai.derek.michigo.AttrHref
 import ai.derek.michigo.AttrSrc
 import ai.derek.michigo.BASE_URL
+import ai.derek.michigo.DivButtonAreaAnchor
 import ai.derek.michigo.DivEmptyMath
 import ai.derek.michigo.DivFinishMatch
 import ai.derek.michigo.DivLeagueInfo
 import ai.derek.michigo.DivLeftTime
 import ai.derek.michigo.DivMatchDate
 import ai.derek.michigo.DivRightTime
+import ai.derek.michigo.HrefNull
 import ai.derek.michigo.ImgTeamLogo
 import ai.derek.michigo.MsgNotFound
 import ai.derek.michigo.SpanResult
@@ -25,6 +28,9 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import java.time.YearMonth
 import javax.inject.Inject
+
+private const val keyHighlight = "highlight"
+private const val keyDetails = "details"
 
 class ScheduleRepositoryImpl
 @Inject
@@ -48,10 +54,10 @@ constructor(
             if (result.isSuccessful) {
                 result.body()?.string()?.let { html ->
                     val document = Jsoup.parse(html)
-                    if (!document.select(DivEmptyMath).isNotEmpty()) {
-                        // 일정 있음
+                    if (!document.select(DivEmptyMath).isNotEmpty()) { // 일정 있음
+                        // highlight, details
+                        val additional = document.getAdditional()
                         ret.add(
-                            //TODO 하이라이트 영상과 상세 결과 페이지 이동 기능 구현 필요
                             Schedule(
                                 date = it,
                                 matchDate = document.getMatchDate(),
@@ -59,6 +65,8 @@ constructor(
                                 leftTeam = document.getTeam(true),
                                 rightTeam = document.getTeam(false),
                                 gameState = document.getGameState(),
+                                highlight = additional[keyHighlight],
+                                details = additional[keyDetails],
                             )
                         )
                     }
@@ -102,5 +110,20 @@ private fun Document.getGameState() =
     } ?: GameState.UPCOMING
 
 private fun String.replaceBrToSpace() = replace("<br>", ", ").replace("\n", "")
+
+private fun Document.getAdditional(): Map<String, String> {
+    val ret = hashMapOf<String, String>()
+    select(DivButtonAreaAnchor).forEach {
+        it.attr(AttrHref).let {
+            if (it != HrefNull) {
+                ret.put(
+                    if (it.contains("highlight")) keyHighlight else keyDetails,
+                    BASE_URL + it
+                )
+            }
+        }
+    }
+    return ret
+}
 
 fun Int.toTwoDigitString(): String = this.toString().padStart(2, '0')
