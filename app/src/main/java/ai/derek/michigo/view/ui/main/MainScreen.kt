@@ -1,10 +1,13 @@
 package ai.derek.michigo.view.ui.main
 
 import ai.derek.michigo.model.Team
+import ai.derek.michigo.view.ui.dialog.WebViewDialog
 import ai.derek.michigo.view.ui.main.nav.MainBottomBar
 import ai.derek.michigo.view.ui.theme.Background
 import ai.derek.michigo.view.ui.theme.MichigoTheme
+import ai.derek.michigo.view.viewmodel.MainSideEffect
 import ai.derek.michigo.view.viewmodel.MainViewModel
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun MainScreen(
@@ -27,6 +32,11 @@ fun MainScreen(
 ) {
 //    val navController = rememberNavController()
     var currentTeam by remember { mutableStateOf(Team.MICHIGO) }
+    var webViewUrl by remember { mutableStateOf("") }
+    val context = LocalContext.current
+    val showToast = { msg: String ->
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+    }
 
     LaunchedEffect(currentTeam) {
         mainViewModel.getSchedule(currentTeam)
@@ -35,6 +45,17 @@ fun MainScreen(
     MichigoTheme {
 
         val mainViewModelState by mainViewModel.collectAsState()
+        mainViewModel.collectSideEffect {
+            when (it) {
+                is MainSideEffect.Toast -> {
+                    showToast(it.text)
+                }
+
+                is MainSideEffect.ShowWebView -> {
+                    webViewUrl = it.url
+                }
+            }
+        }
 
         Scaffold(
             modifier = Modifier
@@ -42,7 +63,7 @@ fun MainScreen(
                 .background(color = Background)
                 .fillMaxSize(),
             topBar = {
-                TopDateItem(mainViewModelState.yearMonth) {
+                TopDateBar(mainViewModelState.yearMonth) {
                     when (it) {
                         DateButtonType.PrevMonth -> mainViewModel.minusMonth()
                         DateButtonType.NextMonth -> mainViewModel.plusMonth()
@@ -73,9 +94,15 @@ fun MainScreen(
                 innerPadding = innerPadding,
                 schedules = mainViewModelState.schedules,
                 onClick = {
-                    //TODO
+                    mainViewModel.showWebView(it)
                 }
             )
+        }
+        if (webViewUrl.isNotBlank()) {
+            // show web view
+            WebViewDialog(webViewUrl) {
+                webViewUrl = ""
+            }
         }
     }
 }

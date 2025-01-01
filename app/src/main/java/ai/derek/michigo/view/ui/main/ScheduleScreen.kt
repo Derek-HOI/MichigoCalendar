@@ -12,16 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-sealed interface ScheduleButtonType {
-    data object Highlight : ScheduleButtonType
-    data object Details : ScheduleButtonType
-}
-
 @Composable
 fun ScheduleScreen(
     innerPadding: PaddingValues,
     schedules: List<Schedule>,
-    onClick: (ScheduleButtonType) -> Unit
+    onClick: (String) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier

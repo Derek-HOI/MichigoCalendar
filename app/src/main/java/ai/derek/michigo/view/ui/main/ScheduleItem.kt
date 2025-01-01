@@ -5,21 +5,30 @@ import ai.derek.michigo.model.GameState
 import ai.derek.michigo.model.Schedule
 import ai.derek.michigo.model.TeamInfo
 import ai.derek.michigo.view.ext.MichigoPreview
+import ai.derek.michigo.view.ext.bounceClick
 import ai.derek.michigo.view.ui.theme.MichigoColor
 import ai.derek.michigo.view.ui.theme.PersianBlue
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -32,7 +41,7 @@ import java.time.OffsetDateTime
 @Composable
 fun ScheduleItem(
     schedule: Schedule,
-    onClick: (ScheduleButtonType) -> Unit
+    onClick: (String) -> Unit
 ) {
 
     Column(
@@ -93,8 +102,79 @@ fun ScheduleItem(
                 item = schedule.rightTeam
             )
         }
-        //TODO highlight, detail page 이동하기
-        //onClick
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            LinkButton(
+                modifier = Modifier.weight(1.0F),
+                type = 0,
+                enabled = !schedule.highlight.isNullOrBlank(),
+            ) {
+                schedule.highlight?.let {
+                    onClick(it)
+                }
+            }
+            LinkButton(
+                modifier = Modifier.weight(1.0F),
+                type = 1,
+                enabled = !schedule.details.isNullOrBlank(),
+            ) {
+                schedule.details?.let {
+                    onClick(it)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LinkButton(
+    modifier: Modifier,
+    type: Int,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Button(
+        modifier = modifier.then(
+            Modifier
+                .bounceClick()
+                .height(40.dp)
+        ),
+        onClick = onClick,
+        contentPadding = PaddingValues(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            contentColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = Color.Transparent,
+        ),
+        border = BorderStroke(
+            width = 1.dp,
+            color = Color(0x1FCCCCCC),
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(1.0F)
+                .fillMaxHeight()
+                .background(
+                    brush = Brush.verticalGradient(listOf(Color.White, Color.LightGray)),
+                    shape = RoundedCornerShape(25.dp),
+                    alpha = 0.5F
+                )
+        ) {
+            Text(
+                text = if (type == 0) "하이라이트" else "경기 결과 상세 보기",
+                style = TextStyle(
+                    color = if (enabled) Color.DarkGray else Color.LightGray,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal,
+                ),
+                modifier = Modifier.align(Alignment.Center)
+            )
+
+        }
     }
 }
 
@@ -118,7 +198,9 @@ private fun ScheduleItemPreview() {
                 score = 9,
                 scoreColor = Color.Red
             ),
-            gameState = GameState.FINISHED
+            gameState = GameState.FINISHED,
+            highlight = null,
+            details = "blahblah"
         )
     ) {}
 }

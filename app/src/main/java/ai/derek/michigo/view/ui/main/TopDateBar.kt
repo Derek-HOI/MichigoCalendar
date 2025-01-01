@@ -2,12 +2,16 @@ package ai.derek.michigo.view.ui.main
 
 import ai.derek.michigo.R
 import ai.derek.michigo.view.ext.MichigoPreview
+import ai.derek.michigo.view.ext.bounceClick
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,7 +22,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hyknowk.presentation.ext.clickableSingle
 import java.time.YearMonth
 
 sealed interface DateButtonType {
@@ -27,7 +30,7 @@ sealed interface DateButtonType {
 }
 
 @Composable
-fun TopDateItem(yearMonth: YearMonth, onClick: (DateButtonType) -> Unit) {
+fun TopDateBar(yearMonth: YearMonth, onClick: (DateButtonType) -> Unit) {
 
     Box(
         modifier = Modifier
@@ -39,13 +42,24 @@ fun TopDateItem(yearMonth: YearMonth, onClick: (DateButtonType) -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(R.drawable.round_arrow_back_24),
-                contentDescription = "",
-                modifier = Modifier.clickableSingle {
+            Button(
+                onClick = {
                     onClick(DateButtonType.PrevMonth)
-                }
-            )
+                },
+                modifier = Modifier.bounceClick(),
+                contentPadding = PaddingValues(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    disabledContentColor = Color.Transparent,
+                )
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.round_arrow_back_24),
+                    contentDescription = "",
+                )
+            }
             Text(
                 text = "%d년 %02d월".format(yearMonth.year, yearMonth.monthValue),
                 style = TextStyle(
@@ -54,13 +68,24 @@ fun TopDateItem(yearMonth: YearMonth, onClick: (DateButtonType) -> Unit) {
                     fontWeight = FontWeight.ExtraBold,
                 )
             )
-            Image(
-                painter = painterResource(R.drawable.round_arrow_forward_24),
-                contentDescription = "",
-                modifier = Modifier.clickableSingle {
+            Button(
+                onClick = {
                     onClick(DateButtonType.NextMonth)
-                }
-            )
+                },
+                modifier = Modifier.bounceClick(),
+                contentPadding = PaddingValues(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    disabledContentColor = Color.Transparent,
+                )
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.round_arrow_forward_24),
+                    contentDescription = "",
+                )
+            }
         }
     }
 }
@@ -68,5 +93,5 @@ fun TopDateItem(yearMonth: YearMonth, onClick: (DateButtonType) -> Unit) {
 @MichigoPreview
 @Composable
 private fun TopDateItemPreview() {
-    TopDateItem(yearMonth = YearMonth.now()) { }
+    TopDateBar(yearMonth = YearMonth.now()) { }
 }

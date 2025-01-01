@@ -76,4 +76,10 @@ class MainViewModel
             }
         }
     }
+
+    fun showWebView(url: String) {
+        intent {
+            postSideEffect(MainSideEffect.ShowWebView(url))
+        }
+    }
 }
